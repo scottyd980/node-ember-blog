@@ -91,7 +91,7 @@ app.configure(function () {
     app.use(express.bodyParser());
     app.use(express.methodOverride());
     // If you want to serve your Ember page as well
-    app.use('/', express.static('/Users/agifford/Workspace/test/dist'));
+    app.use('/', express.static('/Users/Scott/Sites/EmberJS/Blog/dist'));
     app.use(app.router);
 });
 
