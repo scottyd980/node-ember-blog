@@ -1,7 +1,7 @@
 var PORT = 3000,
     SSL_PORT = 3443,
     API_URL = '/api',
-    CONNECTION_STRING = 'mongodb://localhost/geekingreen'; // mongodb://user:pass@host:port/db?options...
+    CONNECTION_STRING = 'mongodb://localhost/blog'; // mongodb://user:pass@host:port/db?options...
 
 var fs = require('fs');
 var http = require('http');
@@ -97,8 +97,14 @@ app.configure(function () {
 
 // All options return the same thing
 app.options('*', function (req, res) {
-    res.send(200);
+    res.end(200);
 });
+
+app.all('*', function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  next();
+ });
 
 /*
     ADD YOUR MODELS HERE

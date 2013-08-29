@@ -1,10 +1,9 @@
-<div class="row">
-    <div class="large-12 columns">
-        <ul class="inline-list">
-            <li>{{#linkTo 'about'}}About{{/linkTo}}</li>
-            {{#each controller}}
-                {{partial myPartial}}
-            {{/each}}
-        </ul>
-    </div>
+<div class="index">
+	<div class="row">
+	    <div class="large-12 columns">
+	        {{#each controller}}
+	            {{partial postPartial}}
+	        {{/each}}
+	    </div>
+	</div>
 </div>

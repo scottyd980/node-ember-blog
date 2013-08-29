@@ -1,5 +1,6 @@
 module.exports = function (mongoose) {
     var Message = mongoose.model('Message', {
+    	_id: Number,
         title: String,
         body: String
     });

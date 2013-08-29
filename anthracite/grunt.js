@@ -29,6 +29,11 @@ module.exports = {
         files: ['assets/styles/**/*.less'],
         tasks: ['less:dev']
       },
+      
+      sass: {
+      	files: ['assets/styles/**/*.scss', 'assets/styles/**/*.sass'],
+      	tasks: ['sass:dev']
+      },
 
       assets: {
         files: [
