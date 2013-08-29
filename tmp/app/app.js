@@ -2,6 +2,7 @@
 
 /* global window, Ember */
 window.Blog = Ember.Application.create({
+	LOG_ACTIVE_GENERATION: true
 });
 
 // Load mixins before anything else
@@ -103,6 +104,30 @@ Blog.AboutController = Ember.Controller.extend({
 
 (function() {
 
+Blog.PostsNewController = Ember.ArrayController.extend({
+	publishPost: function() {
+		var title = this.get('title')
+		, postContent = this.get('postContent');
+		
+		if (!title.trim() || !postContent.trim()) { return; }
+		
+		var post = Blog.Post.createRecord({
+			title: title,
+			postContent: postContent,
+			postDate: new Date(),
+			user: Blog.User.find(1)
+		});
+		
+		post.save();
+		
+		this.transitionToRoute('posts');
+	}
+});
+
+})();
+
+(function() {
+
 Blog.IndexView = Ember.View.extend({
 });
 
@@ -127,11 +152,17 @@ Blog.Router.map(function() {
     	this.route('new');
     });
     
-    this.resource('post', { path: '/post/:post_id'});
+    this.route('post', { path: '/post/:post_id'});
     //this.resource('about');
 });
 
 Blog.IndexRoute = Ember.Route.extend({
+	model: function() {
+		return Blog.Post.find();
+	}
+});
+
+Blog.PostsIndexRoute =  Ember.Route.extend({
 	model: function() {
 		return Blog.Post.find();
 	}

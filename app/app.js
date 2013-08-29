@@ -1,5 +1,6 @@
 /* global window, Ember */
 window.Blog = Ember.Application.create({
+	LOG_ACTIVE_GENERATION: true
 });
 
 // Load mixins before anything else
