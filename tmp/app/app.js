@@ -2,10 +2,47 @@
 
 /* global window, Ember */
 window.Blog = Ember.Application.create({
-	LOG_ACTIVE_GENERATION: true
 });
 
-// Load mixins before anything else
+// Load mixins and components before anything else
+
+
+})();
+
+(function() {
+
+Blog.TodoItemComponent = Ember.Component.extend({
+  item: null,
+
+  keyDown: function (event) {
+    if (event.which === 13) {
+      event.preventDefault();
+
+      var item = this.get('item'),
+        editable = this.$('.todo-editable');
+      item.set('name', editable.text());
+      
+      item.save();
+      
+
+      editable.prop('contenteditable', false).blur();
+    }
+  },
+
+  actions: {
+    edit: function () {
+      this.$('.todo-editable').prop('contenteditable', true).focus();
+    },
+
+    delete: function () {
+      var item = this.get('item');
+      
+      item.deleteRecord();
+      //item.save();
+      
+    }
+  }
+});
 
 
 })();
@@ -14,11 +51,8 @@ window.Blog = Ember.Application.create({
 
 
 Blog.Store = DS.Store.extend({
-	revision: 13,
-	adapter: DS.FixtureAdapter.create()
-//	adapter: DS.RESTAdapter.extend({
-//		url: 'http://localhost:3000/api'
-//	})
+  revision: 12,
+  adapter: DS.FixtureAdapter.create()
 });
 
 
@@ -27,54 +61,27 @@ Blog.Store = DS.Store.extend({
 
 (function() {
 
-Blog.Post = DS.Model.extend({
-	title: DS.attr('string'),
-	postContent: DS.attr('string'),
-	postDate: DS.attr('date'),
-	user: DS.belongsTo('Blog.User')
+
+Blog.Site = DS.Model.extend({
+  title: DS.attr('string'),
+  link: DS.attr('string')
 });
 
-Blog.Post.FIXTURES = [
+Blog.Site.FIXTURES = [
   {
     id: 1,
-    title: 'Post 1',
-    postContent: 'Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Sed posuere consectetur est at lobortis. Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod. Cras justo odio, dapibus ac facilisis in, egestas eget quam.',
-    user: 1
+    title: 'About',
+    link: 'about'
   },
   {
     id: 2,
-    title: 'Post 2',
-    postContent: 'Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Sed posuere consectetur est at lobortis. Maecenas sed diam eget risus varius blandit sit amet non magna. Aenean lacinia bibendum nulla sed consectetur. Donec ullamcorper nulla non metus auctor fringilla.',
-    user: 1
-  }
-];
-
-
-
-})();
-
-(function() {
-
-Blog.User = DS.Model.extend({
-	firstName: DS.attr('string'),
-	lastName: DS.attr('string'),
-	email: DS.attr('string'),
-	description: DS.attr('string'),
-	joinDate: DS.attr('date'),
-	fullName: function() {
-		return this.get('firstName') + ' ' + this.get('lastName');
-	}.property('firstName', 'lastName'),
-	posts: DS.hasMany('Blog.Post')
-});
-
-Blog.User.FIXTURES = [
+    title: 'Contact',
+    link: 'contact'
+  },
   {
-    id: 1,
-    firstName: 'Scott',
-    lastName: 'Douglass',
-    email: 'scott@scottyd.net',
-    description: '',
-    joinDate: new Date(2013, 08, 24)
+    id: 3,
+    title: 'Todos',
+    link: 'todos'
   }
 ];
 
@@ -84,13 +91,45 @@ Blog.User.FIXTURES = [
 
 (function() {
 
-Blog.IndexRoute = Ember.Route.extend({
-  setupController: function (controller, model) {
-    
-    controller.set('content', Blog.Site.find());
-    
+
+  Blog.Todo = DS.Model.extend({
+    name: DS.attr('string'),
+    isDone: DS.attr('boolean')
+  });
+
+  Blog.Todo.FIXTURES = [{
+    id: 'a',
+    name: 'Walk the dog',
+    isDone: false
+  }, {
+    id: 'b',
+    name: 'Buy groceries',
+    isDone: false
+  }]; 
+
+
+})();
+
+(function() {
+
+Blog.ApplicationRoute = Ember.Route.extend({
+
+  model: function(params) { 
+      return this.store.find('site'); 
   }
 });
+
+
+})();
+
+(function() {
+
+Blog.TodosRoute = Ember.Route.extend({
+  model: function(params) { 
+      return this.store.find('todo'); 
+  }
+});
+
 
 })();
 
@@ -104,24 +143,44 @@ Blog.AboutController = Ember.Controller.extend({
 
 (function() {
 
-Blog.PostsNewController = Ember.ArrayController.extend({
-	publishPost: function() {
-		var title = this.get('title')
-		, postContent = this.get('postContent');
-		
-		if (!title.trim() || !postContent.trim()) { return; }
-		
-		var post = Blog.Post.createRecord({
-			title: title,
-			postContent: postContent,
-			postDate: new Date(),
-			user: Blog.User.find(1)
-		});
-		
-		post.save();
-		
-		this.transitionToRoute('posts');
-	}
+Blog.ApplicationController = Ember.ArrayController.extend({
+});
+
+})();
+
+(function() {
+
+Blog.TodosIndexController = Ember.Controller.extend({
+  needs: ['todos'],
+
+  actions: {
+    newTodo: function() { 
+        this.store.createRecord('todo', {
+          name: 'Get r done'
+        }); 
+    },
+
+    clearDone: function() {
+      var todos = this.get('controllers.todos');
+      var allDone = todos.filter(function(todo) {
+        return todo.get('isDone');
+      });
+
+      while (allDone.length > 0) {
+        var todo = allDone.pop(); 
+          todo.deleteRecord();
+          //todo.save(); 
+      }
+    }
+  }
+});
+
+
+})();
+
+(function() {
+
+Blog.TodosController = Ember.ArrayController.extend({
 });
 
 })();
@@ -148,30 +207,13 @@ Ember.Handlebars.registerBoundHelper('wordCount', function (value) {
 (function() {
 
 Blog.Router.map(function() {
-    this.resource('posts', function() {
-    	this.route('new');
-    });
-    
-    this.route('post', { path: '/post/:post_id'});
-    //this.resource('about');
+  this.route('about', { path: '/about' });
+  this.route('contact', { path: '/contact_me' });
+
+  this.resource('todos', function () {
+    this.route('index', { path: '/' });
+  });
 });
 
-Blog.IndexRoute = Ember.Route.extend({
-	model: function() {
-		return Blog.Post.find();
-	}
-});
-
-Blog.PostsIndexRoute =  Ember.Route.extend({
-	model: function() {
-		return Blog.Post.find();
-	}
-});
-
-Blog.PostRoute = Ember.Route.extend({
-	renderTemplate: function() {
-		this.render('post/index');
-	}
-});
 
 })();

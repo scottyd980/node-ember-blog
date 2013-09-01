@@ -29,11 +29,6 @@ module.exports = {
         files: ['assets/styles/**/*.less'],
         tasks: ['less:dev']
       },
-      
-      sass: {
-      	files: ['assets/styles/**/*.scss', 'assets/styles/**/*.sass'],
-      	tasks: ['sass:dev']
-      },
 
       assets: {
         files: [
@@ -133,19 +128,10 @@ module.exports = {
 
     // Testing
     // ------------------
-    mocha: {
+    qunit: {
       all: {
         options: {
-          run: true,
           urls: ['http://localhost:<%= connect.options.port %>/index.html']
-        }
-      }
-    },
-    jasmine: {
-      all: {
-        /*src: '',*/
-        options: {
-          specs: 'test/spec/{,*/}*.js'
         }
       }
     },
@@ -181,7 +167,7 @@ module.exports = {
         files: [{
           expand: true,
           cwd: ".",
-          src: ["assets/styles/**/*.scss", "assets/styles/**/*.sass", "bower_components/foundation/scss/foundation.scss"],
+          src: ["assets/styles/**/*.scss", "assets/styles/**/*.sass"],
           dest: "tmp/assets/styles",
           ext: ".css"
         }]
@@ -190,7 +176,7 @@ module.exports = {
         files: [{
           expand: true,
           cwd: ".",
-          src: ["assets/styles/**/*.scss", "assets/styles/**/*.sass", "bower_components/foundation/scss/foundation.scss"],
+          src: ["assets/styles/**/*.scss", "assets/styles/**/*.sass"],
           dest: "tmp/assets/styles",
           ext: ".css"
         }],
@@ -271,11 +257,12 @@ module.exports = {
     emberTemplates: {
       options: {
         // "app/application.hbs" => "application"
-        // "app/modules/my_module/templates/index.hbs" => "my_module"
+        // "app/modules/my_module/templates/my_module.hbs" => "my_module"
+				// "app/modules/my_module/templates/index.hbs" => "my_module/index"
         // "app/modules/my_module/templates/foo.hbs" => "my_module/foo"
         // "app/modules/my_module/templates/bar/foo.hbs" => "my_module/bar/foo"
         // "app/templates/foo.hbs" => "foo"
-        // "app/partials/foo" => "_foo"
+        // "app/partials/foo.hbs" => "_foo"
         // "app/modules/my_module/partials/bar.hbs" => "my_module/_bar"
         templateName: function (sourceFile) {
           console.log('Compiling: '.green + sourceFile);
@@ -289,7 +276,7 @@ module.exports = {
 
           // app/modules/main/templates/index.handlebars => "index"
           if (moduleName && !isMainModule) {
-            if (fileName === "index") {
+            if (fileName === moduleName) {
               return moduleName;
             } else {
               if (isPartial) return moduleName+'/'+prefix+fileName;

@@ -1,14 +1,14 @@
 {
   "name": "ember-data",
   "_cacheHeaders": {
-    "ETag": "\"06c35d6b4f64f4897de68a6db73d405d\"",
-    "Last-Modified": "Tue, 28 May 2013 12:16:28 GMT",
-    "Content-Length": "259757",
-    "Content-Type": "application/javascript"
+    "ETag": "\"fc311d5c7779f4010beac62652313eda\"",
+    "Last-Modified": "Sun, 01 Sep 2013 20:29:20 GMT",
+    "Content-Length": "184915",
+    "Content-Type": "text/javascript"
   },
-  "_release": "e-tag:06c35d6b4",
+  "_release": "e-tag:fc311d5c7",
   "main": "index.js",
-  "_source": "http://builds.emberjs.com.s3.amazonaws.com/ember-data-0.13.js",
+  "_source": "http://builds.emberjs.com.s3.amazonaws.com/daily/20130901/ember-data.js",
   "_target": "*",
-  "_originalSource": "http://builds.emberjs.com.s3.amazonaws.com/ember-data-0.13.js"
+  "_originalSource": "http://builds.emberjs.com.s3.amazonaws.com/daily/20130901/ember-data.js"
 }
