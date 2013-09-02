@@ -29,6 +29,11 @@ module.exports = {
         files: ['assets/styles/**/*.less'],
         tasks: ['less:dev']
       },
+      
+      scss: {
+      	files: ['assets/styles/**/*.scss', 'assets/styles/**/*.sass'],
+      	tasks: ['sass:dev']
+      },
 
       assets: {
         files: [
@@ -166,8 +171,8 @@ module.exports = {
       dev: {
         files: [{
           expand: true,
-          cwd: ".",
-          src: ["assets/styles/**/*.scss", "assets/styles/**/*.sass"],
+          cwd: "assets/styles",
+          src: ["**/*.scss", "**/*.sass"],
           dest: "tmp/assets/styles",
           ext: ".css"
         }]
@@ -175,8 +180,8 @@ module.exports = {
       dist: {
         files: [{
           expand: true,
-          cwd: ".",
-          src: ["assets/styles/**/*.scss", "assets/styles/**/*.sass"],
+          cwd: "assets/styles",
+          src: ["**/*.scss", "**/*.sass"],
           dest: "tmp/assets/styles",
           ext: ".css"
         }],
